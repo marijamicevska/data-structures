@@ -1,0 +1,152 @@
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+
+class SLLNode<E> {
+    protected E element;
+    protected SLLNode<E> succ;
+
+    public SLLNode(E elem, SLLNode<E> succ) {
+        this.element = elem;
+        this.succ = succ;
+    }
+
+    @Override
+    public String toString() {
+        return element.toString();
+    }
+}
+
+class SLL<E> {
+    private SLLNode<E> first;
+
+    public SLL() {
+        // Construct an empty SLL
+        this.first = null;
+    }
+
+
+    @Override
+    public String toString() {
+        String ret = new String();
+        if (first != null) {
+            SLLNode<E> tmp = first;
+            ret += tmp + " ";
+            while (tmp.succ != null) {
+                tmp = tmp.succ;
+                ret += tmp + " ";
+            }
+        } else
+            ret = "Prazna lista!!!";
+        return ret;
+    }
+
+    public void insertFirst(E o) {
+        SLLNode<E> ins = new SLLNode<E>(o, first);
+        first = ins;
+    }
+
+    public void insertLast(E o) {
+        if (first != null) {
+            SLLNode<E> tmp = first;
+            while (tmp.succ != null)
+                tmp = tmp.succ;
+            SLLNode<E> ins = new SLLNode<E>(o, null);
+            tmp.succ = ins;
+        } else {
+            insertFirst(o);
+        }
+    }
+
+    public SLLNode<E> getFirst() {
+        return first;
+    }
+
+
+    public Iterator<E> iterator () {
+        // Return an iterator that visits all elements of this list, in left-to-right order.
+        return new LRIterator<E>();
+    }
+
+    // //////////Inner class ////////////
+
+    private class LRIterator<E> implements Iterator<E> {
+
+        private SLLNode<E> place, curr;
+
+        private LRIterator() {
+            place = (SLLNode<E>) first;
+            curr = null;
+        }
+
+        public boolean hasNext() {
+            return (place != null);
+        }
+
+        public E next() {
+            if (place == null)
+                throw new NoSuchElementException();
+            E nextElem = place.element;
+            curr = place;
+            place = place.succ;
+            return nextElem;
+        }
+
+        public void remove() {
+            //Not implemented
+        }
+    }
+
+    public void setFirst(SLLNode<E> node)
+    {
+        first = node;
+    }
+}
+public class Main{
+public static void split(SLL<Integer> lista){
+    SLLNode<Integer> temp = lista.getFirst();
+    SLLNode<Integer> firstEven = null;
+    SLLNode<Integer> firstOdd = null;
+    SLLNode<Integer> even = null;
+    SLLNode<Integer> odd = null;
+    while(temp!=null){
+        if(temp.element%2==0){
+            if(firstEven==null)
+                firstEven = temp;
+            else even.succ = temp;
+            even = temp;
+        }
+        else{
+            if(firstOdd==null)
+                firstOdd = temp;
+            else odd.succ = temp;
+            odd = temp;
+        }
+        temp = temp.succ;
+    }
+    SLL<Integer> lista2 = new SLL<>();
+    if(even!=null)
+    {
+        even.succ = null;
+        lista2.setFirst(firstEven);
+    }
+    if(odd!=null)
+    {
+        odd.succ = null;
+        lista.setFirst(firstOdd);
+    }
+    System.out.println("Odd numbers:");
+    System.out.println(lista);
+    System.out.println("Even numbers:");
+    System.out.println(lista2);
+}
+    public static void main(String[] args) {
+        SLL<Integer> list = new SLL<>();
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        for(int i=0;i<n;i++){
+            list.insertLast(sc.nextInt());
+        }
+        split(list);
+    }
+}
