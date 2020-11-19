@@ -1,0 +1,103 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
+import java.util.Stack;
+
+class SLLNode<E> {
+    protected E element;
+    protected SLLNode<E> succ;
+
+    public SLLNode(E elem, SLLNode<E> succ) {
+        this.element = elem;
+        this.succ = succ;
+    }
+
+    @Override
+    public String toString() {
+        return element.toString();
+    }
+}
+class LinkedStack<E> extends Stack<E> {
+
+    //Stekot e pretstaven na sledniot nacin: top e link do prviot jazol
+    // na ednostrano-povrzanata lista koja sodrzi gi elementite na stekot .
+    private SLLNode<E> top;
+
+    public LinkedStack () {
+        // Konstrukcija na nov, prazen stek.
+        top = null;
+    }
+
+    public boolean isEmpty () {
+        // Vrakja true ako i samo ako stekot e prazen.
+        return (top == null);
+    }
+
+    public E peek () {
+        // Go vrakja elementot na vrvot od stekot.
+        if (top == null)
+            throw new NoSuchElementException();
+        return top.element;
+    }
+
+    public void clear () {
+        // Go prazni stekot.
+        top = null;
+    }
+
+    public E push (E x) {
+        // Go dodava x na vrvot na stekot.
+        top = new SLLNode<E>(x, top);
+        return x;
+    }
+
+    public E pop () {
+        // Go otstranuva i vrakja elementot shto e na vrvot na stekot.
+        if (top == null)
+            throw new NoSuchElementException();
+        E topElem = top.element;
+        top = top.succ;
+        return topElem;
+    }
+
+}
+
+
+public class Main {
+
+    public static void postfix(String expression){
+        int result = 0;
+        String [] parts = expression.split("\\s+");
+        Stack<Integer> stack = new LinkedStack<>();
+        for(int i=0;i<parts.length;i++){
+            if(Character.isDigit(parts[i].charAt(0)))
+                stack.push(Integer.parseInt(parts[i]));
+            else{
+                int tmp1 = stack.pop();
+                int tmp2 = stack.pop();
+                if(parts[i].charAt(0)=='+'){
+                    result = tmp2 + tmp1;
+                }
+                else if(parts[i].charAt(0)=='-'){
+                    result = tmp2 - tmp1;
+                }
+                else if(parts[i].charAt(0)=='*'){
+                    result = tmp2 * tmp1;
+                }
+                else if(parts[i].charAt(0)=='/'){
+                    result = tmp2 / tmp1;
+                }
+                stack.push(result);
+            }
+        }
+        System.out.println(result);
+    }
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String expression = br.readLine();
+        postfix(expression);
+        br.close();
+    }
+
+}
