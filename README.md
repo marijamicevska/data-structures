@@ -1,2 +1,2 @@
 # data-structures
-## Exercises from LeetCode.com
+## Some of my solutions for LeetCode exercies
